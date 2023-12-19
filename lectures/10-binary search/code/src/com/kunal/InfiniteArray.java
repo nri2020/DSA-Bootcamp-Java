@@ -1,44 +1,40 @@
-package com.kunal;
-// https://www.geeksforgeeks.org/find-position-element-sorted-array-infinite-numbers/
-public class InfiniteArray {
-    public static void main(String[] args) {
-        int[] arr = {3, 5, 7, 9, 10, 90,
-                100, 130, 140, 160, 170};
-        int target = 10;
-        System.out.println(ans(arr, target));
-    }
-    static int ans(int[] arr, int target) {
-        // first find the range
-        // first start with a box of size 2
-        int start = 0;
-        int end = 1;
-
-        // condition for the target to lie in the range
-        while (target > arr[end]) {
-            int temp = end + 1; // this is my new start
-            // double the box value
-            // end = previous end + sizeofbox*2
-            end = end + (end - start + 1) * 2;
-            start = temp;
-        }
-        return binarySearch(arr, target, start, end);
-
-    }
-    static int binarySearch(int[] arr, int target, int start, int end) {
-        while(start <= end) {
-            // find the middle element
-//            int mid = (start + end) / 2; // might be possible that (start + end) exceeds the range of int in java
-            int mid = start + (end - start) / 2;
-
-            if (target < arr[mid]) {
-                end = mid - 1;
-            } else if (target > arr[mid]) {
-                start = mid + 1;
-            } else {
-                // ans found
+class SearchInfyniteArray {
+    static int binarySearch(int arr[], int l, int r, int x) {
+        if (r >= l) {
+            int mid = l + (r - l) / 2;
+            if (arr[mid] == x)
                 return mid;
-            }
+            if (arr[mid] > x)
+                return binarySearch(arr, l, mid - 1, x);
+            return binarySearch(arr, mid + 1, r, x);
         }
         return -1;
+    }
+
+    static int findPos(int arr[], int key) {
+        int l = 0, h = 1;
+        int val = arr[0];
+
+        while (val < key) {
+            l = h;
+            if (2 * h < arr.length - 1)
+                h = 2 * h;
+            else
+                h = arr.length - 1;
+
+            val = arr[h];
+        }
+
+        return binarySearch(arr, l, h, key);
+    }
+
+    public static void main(String[] args) {
+        int arr[] = new int[]{3, 5, 7, 9, 10, 90, 100, 130, 140, 160, 170};
+        int ans = findPos(arr, 160);
+
+        if (ans == -1)
+            System.out.println("Element not found");
+        else
+            System.out.println("Element found at index " + ans);
     }
 }
